@@ -5,7 +5,6 @@ seaborn
 lasio
 plotly
 numpy
-PIL
 time
 streamlit
 statsmodel
