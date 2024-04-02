@@ -891,14 +891,14 @@ st.title('CARBON SENSE AI')
 st.text('This is a web app that allows exploration, engineering and applciation of machine learning models on Petrophysics Data')
 
 # Load the image
-st.image('HOMEPAGE.jpeg', width=500)
+st.image('C:/Users/poude/OneDrive/Desktop/HOMEPAGE.jpeg', width=500)
 
 
-st.sidebar.image('Green and Cream Leaves Landscaping Logo.png', width=150)
+st.sidebar.image('C:/Users/poude/OneDrive/Desktop/Green and Cream Leaves Landscaping Logo.png', width=150)
 
 # Display the image
 
-
+df = None
 
 
 file_type = st.sidebar.radio("Select file type:", ("LAS", "CSV"))
@@ -917,9 +917,9 @@ if file_type == "LAS":
 
         except UnicodeDecodeError as e:
                 st.error(f"error loading log.las: {e}")
-    else:
-            las_file = None
-            well_data = None
+                df=None
+    
+
 
 
 
@@ -943,7 +943,6 @@ elif file_type == "CSV":
 
 
 
-
 # Create a dropdown button in the body of the website
 selected_option = st.selectbox('What would you like to do with your data?', ['Data Exploration & Visualization', 
                                                  'Data Preprocessing', 'Feature Extraction & Engineering','Machine Learning Modeling'])
@@ -956,17 +955,17 @@ selected_option = st.selectbox('What would you like to do with your data?', ['Da
 
 
 
+if df is not None:
 
-
-# Display the corresponding buttons based on the selected option
-if selected_option == 'Data Exploration & Visualization':
-    SIDEBAR1(df)    
-elif selected_option == 'Data Preprocessing':
-    SIDEBAR2(df)
-elif selected_option == 'Feature Extraction & Engineering':    
-    SIDEBAR3(df)
-elif selected_option == 'Machine Learning Modeling':    
-    SIDEBAR4(df)
+    # Display the corresponding buttons based on the selected option
+    if selected_option == 'Data Exploration & Visualization':
+        SIDEBAR1(df)    
+    elif selected_option == 'Data Preprocessing':
+        SIDEBAR2(df)
+    elif selected_option == 'Feature Extraction & Engineering':    
+        SIDEBAR3(df)
+    elif selected_option == 'Machine Learning Modeling':    
+        SIDEBAR4(df)
 
 
 
