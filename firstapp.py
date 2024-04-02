@@ -154,8 +154,9 @@ def missingvalues(df):
     plt.xlabel('Columns')
     plt.ylabel('Rows')
     
+    fig = plt.gcf()
     # Display the plot in Streamlit
-    st.pyplot()
+    st.pyplot(fig)
 
 
 def outlier(df):
@@ -177,7 +178,8 @@ def outlier(df):
                 ax.semilogy()
             
         plt.tight_layout()
-        st.pyplot()
+        fig = plt.gcf()
+        st.pyplot(fig)
     else: 
         st.write("Sorry, unable to generate output. Data format does not match our requirements.")
 
