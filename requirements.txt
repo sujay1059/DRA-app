@@ -6,5 +6,6 @@ lasio
 plotly
 numpy
 scikit-learn
+statsmodels 
 
 
