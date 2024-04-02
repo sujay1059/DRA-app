@@ -891,10 +891,10 @@ st.title('CARBON SENSE AI')
 st.text('This is a web app that allows exploration, engineering and applciation of machine learning models on Petrophysics Data')
 
 # Load the image
-st.image('C:/Users/poude/OneDrive/Desktop/HOMEPAGE.jpeg', width=500)
+st.image('HOMEPAGE.jpeg', width=500)
 
 
-st.sidebar.image('C:/Users/poude/OneDrive/Desktop/Green and Cream Leaves Landscaping Logo.png', width=150)
+st.sidebar.image('Green and Cream Leaves Landscaping Logo.png', width=150)
 
 # Display the image
 
