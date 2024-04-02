@@ -6,7 +6,6 @@ lasio
 plotly
 numpy
 streamlit
-statsmodel
 sklearn
 
 
