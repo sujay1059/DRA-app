@@ -6,6 +6,5 @@ lasio
 plotly
 numpy
 scikit-learn
-sklearn
 
 
