@@ -3,7 +3,6 @@ pandas
 matplotlib
 seaborn
 lasio
-io
 plotly
 numpy
 PIL
