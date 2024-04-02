@@ -3,6 +3,8 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+import lasio
+from io import StringIO
 
 import plotly.express as px
 import numpy as np
@@ -788,7 +790,7 @@ def Isolation_Forest_for_Auto_Outlier_Detector(df):
 
 
 
-def SIDEBAR1():
+def SIDEBAR1(df):
    
     #Sidebar navigation
     st.sidebar.title('Navigation')
@@ -803,7 +805,7 @@ def SIDEBAR1():
     
 
     
-def SIDEBAR2():
+def SIDEBAR2(df):
     # Sidebar setup
    
     #Sidebar navigation
@@ -817,7 +819,7 @@ def SIDEBAR2():
     elif options == 'Normalization':
         normalization(df)
     
-def SIDEBAR3():
+def SIDEBAR3(df):
     # Sidebar setup
   
     #Sidebar navigation
@@ -833,7 +835,7 @@ def SIDEBAR3():
     elif options == 'Box-Plots':
         boxplots(df)    
     
-def SIDEBAR4():
+def SIDEBAR4(df):
     # Sidebar setup
     
     st.sidebar.title('Navigation')
@@ -896,13 +898,43 @@ st.sidebar.image('C:/Users/poude/OneDrive/Desktop/Green and Cream Leaves Landsca
 
 # Display the image
 
-upload_file = st.sidebar.file_uploader('Upload a WellLog data')
 
 
 
-# Check if file has been uploaded
-if upload_file is not None:
-    df = pd.read_csv(upload_file,header = 0, skiprows =[1])
+file_type = st.sidebar.radio("Select file type:", ("LAS", "CSV"))
+
+
+
+if file_type == "LAS":
+    las_file = st.file_uploader("Upload LAS file", type=["las"])
+    if las_file is not None:
+        try:
+                bytes_data = las_file.read()
+                str_io = StringIO(bytes_data.decode('Windows-1252'))
+                las_file = lasio.read(str_io)
+                df = las_file.df()
+                df['DEPTH'] = df.index
+
+        except UnicodeDecodeError as e:
+                st.error(f"error loading log.las: {e}")
+    else:
+            las_file = None
+            well_data = None
+
+
+
+
+
+        
+elif file_type == "CSV":
+    csv_file = st.file_uploader("Upload CSV file", type=["csv"])
+    if csv_file is not None:
+        st.success("CSV file uploaded successfully!")
+        # Process CSV file
+        df = pd.read_csv(csv_file)
+
+
+
 
 
 
@@ -928,13 +960,13 @@ selected_option = st.selectbox('What would you like to do with your data?', ['Da
 
 # Display the corresponding buttons based on the selected option
 if selected_option == 'Data Exploration & Visualization':
-    SIDEBAR1()    
+    SIDEBAR1(df)    
 elif selected_option == 'Data Preprocessing':
-    SIDEBAR2()
+    SIDEBAR2(df)
 elif selected_option == 'Feature Extraction & Engineering':    
-    SIDEBAR3()
+    SIDEBAR3(df)
 elif selected_option == 'Machine Learning Modeling':    
-    SIDEBAR4()
+    SIDEBAR4(df)
 
 
 
