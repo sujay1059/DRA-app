@@ -5,7 +5,7 @@ seaborn
 lasio
 plotly
 numpy
-streamlit
+scikit-learn
 sklearn
 
 
