@@ -1,0 +1,15 @@
+streamlit
+pandas
+matplotlib
+seaborn
+lasio
+io
+plotly.express
+numpy
+PIL
+time
+streamlit
+statsmodel.api
+sklearn
+
+
