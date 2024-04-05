@@ -240,7 +240,7 @@ def outlier(df):
     
     numerical_columns = df.select_dtypes(include=[np.number]).columns.tolist()
     if len(numerical_columns) == len(df.columns):
-    
+        df.dropna(inplace=True)
         red_circle = dict(markerfacecolor='red', marker='o', markeredgecolor='white')
 
         fig, axs = plt.subplots(1, len(df.columns), figsize=(30,10))
