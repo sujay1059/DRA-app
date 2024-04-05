@@ -473,48 +473,16 @@ def boxplots(df):
 
 def Unsupervised_Clustering_for_Lithofacies(df):
 
-    required_columns = ["WELL", "DEPTH_MD", "RDEP", "RHOB", "GR", "NPHI", "PEF", "DTC", "FORCE_2020_LITHOFACIES_LITHOLOGY"]
+    df = df.assign(WELL=1)
+
+
+    required_columns = [ "RHOB_E", "GR_E", "NPHI_E", "DT_E"]
         #Create the figure
     if all(col in df.columns for col in required_columns):
 
-        workingdf = df[["WELL", "DEPTH_MD", "RDEP", "RHOB", "GR", "NPHI", "PEF", "DTC", "FORCE_2020_LITHOFACIES_LITHOLOGY"]].copy()
-        workingdf.rename(columns={'FORCE_2020_LITHOFACIES_LITHOLOGY':'FACIES'}, inplace=True)
-
-        lithology_numbers = {30000: 'Sandstone',
-                        65030: 'Sandstone/Shale',
-                        65000: 'Shale',
-                        80000: 'Marl',
-                        74000: 'Dolomite',
-                        70000: 'Limestone',
-                        70032: 'Chalk',
-                        88000: 'Halite',
-                        86000: 'Anhydrite',
-                        99000: 'Tuff',
-                        90000: 'Coal',
-                        93000: 'Basement'}
-
-        simple_lithology_numbers = {30000: 1,
-                        65030: 2,
-                        65000: 3,
-                        80000: 4,
-                        74000: 5,
-                        70000: 6,
-                        70032: 7,
-                        88000: 8,
-                        86000: 9,
-                        99000: 10,
-                        90000: 11,
-                        93000: 12}
-        workingdf['LITH'] = workingdf['FACIES'].map(lithology_numbers)
-        workingdf['LITH_SI'] = workingdf['FACIES'].map(simple_lithology_numbers)
-
-        g = sns.FacetGrid(workingdf, col='LITH', col_wrap=4)
-        g.map(sns.scatterplot, 'NPHI', 'RHOB', alpha=0.5)
-        g.set(xlim=(-0.15, 1))
-        g.set(ylim=(3, 1))
-
-
-        def create_plot(wellname, dataframe, curves_to_plot, depth_curve, log_curves=[], facies_curves=[]):
+        workingdf = df[[ "WELL","DEPTH", "RHOB_E", "GR_E", "NPHI_E", "DT_E"]].copy()
+       
+        def create_plot(wellname, dataframe, curves_to_plot, depth_curve, facies_curves=[]):
         # Count the number of tracks we need
             num_tracks = len(curves_to_plot)
             
@@ -562,14 +530,12 @@ def Unsupervised_Clustering_for_Lithofacies(df):
                     plt.setp(ax[i].get_yticklabels(), visible = False)
                 
                 # Check to see if we have any logarithmic scaled curves
-                if curve in log_curves:
-                    ax[i].set_xscale('log')
-                    ax[i].grid(which='minor', color='lightgrey', linestyle='-')
+                
                 
 
             
             plt.tight_layout()
-            plt.show()
+            st.pyplot(fig)
             
             return cmap_facies
 
@@ -587,93 +553,75 @@ def Unsupervised_Clustering_for_Lithofacies(df):
             for well, data in grouped:
                 wells_as_dfs.append(data)
                 wells_wellnames.append(well)
-
-            print('index  wellname')
-            for i, name in enumerate(wells_wellnames):
-                print(f'{i}      {name}')
             
             return wells_as_dfs, wells_wellnames
-        grouped_wells, grouped_names = well_splitter(workingdf, 'WELL')
-        def optimise_k_means(data, max_k):
-            means = []
-            inertias = []
+        
             
-            for k in range(1,max_k):
-                kmeans = KMeans(n_clusters=k)
-                kmeans.fit(data)
-                means.append(k)
-                inertias.append(kmeans.inertia_)
-                
-            fig = plt.subplots(figsize=(10, 5))
-            plt.plot(means, inertias, 'o-')
-            plt.xlabel("Number of Clusters")
-            plt.ylabel("Inertia")
-            plt.grid(True)
-            plt.show()
+        
 
-        workingdf.dropna(inplace =True)
+        workingdf.dropna(inplace =True)        
 
-        from yellowbrick.cluster import SilhouetteVisualizer
+        
+           
+        data = workingdf[['GR_E', 'RHOB_E']]
 
-        def visualise_k_means_sillouette(data, max_k):
-            fig, ax = plt.subplots(2, 3, figsize=(10, 5))
-            means = []
-            silhouette_avg = []
-            
-            for k in range(2,max_k): #start at 2 clusters
-                print(k)
-                kmeans = KMeans(n_clusters=k)
-                q, mod = divmod(k, 2)
-                
-                vis = SilhouetteVisualizer(kmeans, colors='yellowbrick', ax=ax[q-1][mod])
-                vis.fit(data)
-            
-            plt.plot(means, inertias, 'o-')
-            plt.xlabel("Number of Clusters")
-            plt.ylabel("Inertia")
-            plt.grid(True)
-            plt.show()
+        # Create a sidebar for user input
+        st.sidebar.header('KMeans Clustering')
+        num_clusters = st.sidebar.slider('Select number of clusters:', 2, 20, 10)
 
-        data = workingdf[['GR', 'RHOB']]
-        kmeans = KMeans(n_clusters=10)
+        # Perform KMeans clustering
+        kmeans = KMeans(n_clusters=num_clusters)
+        kmeans.fit(data)
+
+        # Create a Silhouette Visualizer
         visualizer = SilhouetteVisualizer(kmeans, colors='yellowbrick')
-        visualizer.fit(data)
-        visualizer.show()
 
-        from sklearn.metrics import silhouette_score
+        # Display the Silhouette Visualizer in the main app area
+        st.header('Silhouette Visualizer')
+        st.pyplot(visualizer.show())
+
+        
+
 
         def optimise_k_means_sillouette(data, max_k):
-            means = []
+            range_n_clusters = list(range(2, max_k + 1))  # Update to include max_k
             silhouette_avg = []
-            
-            range_n_clusters = [2, 3, 4, 5, 6, 7, 8]
-            silhouette_avg = []
-            for num_clusters in range_n_clusters:
 
-                # initialise kmeans
+            for num_clusters in range_n_clusters:
+                # Initialise kmeans
                 kmeans = KMeans(n_clusters=num_clusters)
                 kmeans.fit(data)
                 cluster_labels = kmeans.labels_
 
-                # silhouette score
+                # Silhouette score
                 silhouette_avg.append(silhouette_score(data, cluster_labels))
-            plt.plot(range_n_clusters,silhouette_avg, 'bo-')
-            plt.xlabel("Number of Clusters") 
-            plt.ylabel('Silhouette Score') 
-            plt.title('Silhouette Analysis For Kmeans', fontsize=14, fontweight='bold')
-            plt.show()
 
-        optimise_k_means_sillouette(workingdf[['GR', 'RHOB', 'NPHI', 'DTC']], 5)
+            # Plot the silhouette scores
+            plt.plot(range_n_clusters, silhouette_avg, 'bo-')
+            plt.xlabel("Number of Clusters")
+            plt.ylabel('Silhouette Score')
+            plt.title('Silhouette Analysis For KMeans')
+            plt.grid(True)
 
-        workingdf.dropna(inplace=True)
+            # Display the plot
+            st.pyplot()
 
-        optimise_k_means(workingdf[['GR', 'RHOB', 'NPHI', 'DTC']], 30)
+        
+        # Create a sidebar for user input
+        st.sidebar.header('Optimize KMeans Silhouette Analysis')
+        max_clusters = st.sidebar.slider('Select maximum number of clusters:', 2, 20, 5)
+
+        # Call the function within the Streamlit app
+        optimise_k_means_sillouette(workingdf[['GR_E', 'RHOB_E', 'NPHI_E', 'DT_E']], max_clusters)
+
+
+               
 
         # Create the KMeans model with the selected number of clusters
         kmeans = KMeans(n_clusters=5)
 
         # Fit the model to our dataset
-        kmeans.fit(workingdf[['GR', 'RHOB', 'NPHI', 'DTC']])
+        kmeans.fit(workingdf[['GR_E', 'RHOB_E', 'NPHI_E', 'DT_E']])
 
         # Assign the data back to the workingdf
         workingdf['KMeans'] = kmeans.labels_
@@ -682,10 +630,10 @@ def Unsupervised_Clustering_for_Lithofacies(df):
         gmm = GaussianMixture(n_components=5)
 
         # Fit the model to our dataset
-        gmm.fit(workingdf[['GR', 'RHOB', 'NPHI', 'DTC']])
+        gmm.fit(workingdf[['GR_E', 'RHOB_E', 'NPHI_E', 'DTC_E']])
 
         # Predict the labels
-        gmm_labels = gmm.predict(workingdf[['GR', 'RHOB', 'NPHI', 'DTC']])
+        gmm_labels = gmm.predict(workingdf[['GR_E', 'RHOB_E', 'NPHI_E', 'DT_E']])
 
         # Assign the labels back to the workingdf
         workingdf['GMM'] = gmm_labels
@@ -693,17 +641,44 @@ def Unsupervised_Clustering_for_Lithofacies(df):
         dfs_wells, wellnames = well_splitter(workingdf, 'WELL')
 
         # Setup the curves to plot
-        curves_to_plot = ['GR', 'RHOB', 'NPHI', 'DTC',  'LITH_SI', 'KMeans','GMM']
-        logarithmic_curves = ['RDEP']
-        facies_curve=['KMeans','GMM', 'LITH_SI']
+        curves_to_plot = ['GR_E', 'RHOB_E', 'NPHI_E', 'DT_E', 'KMeans','GMM']
+        
+        facies_curve=['KMeans','GMM']
 
         # Create plot by passing in the relevant well index number
-        well = 4
+        well = 0
         cmap_facies = create_plot(wellnames[well], 
                     dfs_wells[well], 
                     curves_to_plot, 
-                    dfs_wells[well]['DEPTH_MD'], 
-                    logarithmic_curves, facies_curve)
+                    dfs_wells[well]['DEPTH'], 
+                     facies_curve)
+    
+
+
+        fig, ax = plt.subplots(figsize=(20,10))
+        ax1 = plt.subplot2grid((1,3), (0,0))
+        ax1.scatter(dfs_wells[well]['NPHI_E'], dfs_wells[well]['RHOB_E'], c=dfs_wells[well]['KMeans'], s=8, cmap=cmap_facies)
+        ax1.set_title('KMeans', fontsize=22, y=1.05)
+
+        ax2 = plt.subplot2grid((1,3), (0,1))
+        ax2.scatter(dfs_wells[well]['NPHI_E'], dfs_wells[well]['RHOB_E'], c=dfs_wells[well]['GMM'], s=8)
+        ax2.set_title('GMM', fontsize=22, y=1.05)
+
+       
+
+        for ax in [ax1, ax2]:
+            ax.set_xlim(0, 0.7)
+            ax.set_ylim(3, 1.5)
+            ax.set_ylabel('RHOB', fontsize=18, labelpad=30)
+            ax.set_xlabel('NPHI', fontsize=18, labelpad=30)
+            ax.grid()
+            ax.set_axisbelow(True)
+
+            ax.tick_params(axis='both', labelsize=14)
+        plt.tight_layout()
+        
+        sns.pairplot(dfs_wells[1], vars=['GR_E', 'RHOB_E','NPHI_E', 'DT_E'], hue='KMeans', palette='Dark2',
+             diag_kind='kde', plot_kws = {'s': 15, 'marker':'o', 'alpha':1})
     else: 
         st.write("Sorry, unable to generate output. Data format does not match our requirements.")
 
