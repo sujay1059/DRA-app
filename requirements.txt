@@ -7,5 +7,5 @@ plotly
 numpy
 scikit-learn
 statsmodels 
-
+yellowbrick
 
