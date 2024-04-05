@@ -563,7 +563,7 @@ def Unsupervised_Clustering_for_Lithofacies(df):
 
         
            
-        data = workingdf[['GR', 'RHOB']]
+        data = workingdf[['GR_E', 'RHOB_E']]
 
         # Create a sidebar for user input
         st.sidebar.header('KMeans Silhouette Analysis')
