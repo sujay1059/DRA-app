@@ -237,10 +237,36 @@ def missingvalues(df):
 
 
 def outlier(df):
+
+    
+    df_e = pd.DataFrame()  # Initialize DataFrame for columns ending with "_E"
+    df_f = pd.DataFrame()  # Initialize DataFrame for columns ending with "_F"
+    df_s = pd.DataFrame()  # Initialize DataFrame for columns ending with "_S"
+    df_u = pd.DataFrame()  # Initialize DataFrame for columns ending with "_U"
+    
+    
+
+    for col in df.columns:
+        if col.endswith('_E'):
+            df_e[col] = df[col]  # Add column to df_e
+        elif col.endswith('_F'):
+            df_f[col] = df[col]  # Add column to df_f
+        elif col.endswith('_S'):
+            df_s[col] = df[col]  # Add column to df_s
+        elif col.endswith('_U'):
+            df_u[col] = df[col]  # Add column to df_u
+    
+    if not df_e.empty:
+        df=df_e
+
+
     
     numerical_columns = df.select_dtypes(include=[np.number]).columns.tolist()
     if len(numerical_columns) == len(df.columns):
+    
+        
         df.dropna(inplace=True)
+        
         red_circle = dict(markerfacecolor='red', marker='o', markeredgecolor='white')
 
         fig, axs = plt.subplots(1, len(df.columns), figsize=(30,10))
@@ -259,6 +285,7 @@ def outlier(df):
         st.pyplot(fig)
     else: 
         st.write("Sorry, unable to generate output. Data format does not match our requirements.")
+
 
 
 
