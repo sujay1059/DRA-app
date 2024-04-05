@@ -19,7 +19,7 @@ from sklearn.linear_model import LinearRegression
 import matplotlib.colors as colors
 from sklearn.cluster import KMeans
 from sklearn.mixture import GaussianMixture
-
+from yellowbrick.cluster import SilhouetteVisualizer
 
 st.set_page_config(layout="wide")
 
