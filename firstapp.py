@@ -822,7 +822,7 @@ def Random_Forest_for_LinearRegression(df):
 def Isolation_Forest_for_Auto_Outlier_Detector(df):
  
 
-    required_columns = ['RHOB', 'GR', 'NPHI', 'PEF','CALI', 'DTC']
+    required_columns = ['RHOB_E', 'GR_E', 'NPHI_E','CALI_E', 'DT_E']
         #Create the figure
     if all(col in df.columns for col in required_columns): 
 
@@ -831,7 +831,7 @@ def Isolation_Forest_for_Auto_Outlier_Detector(df):
 
         df = df.dropna()
 
-        anomaly_inputs = ['NPHI', 'RHOB', 'GR', 'CALI', 'PEF', 'DTC']
+        anomaly_inputs = ['NPHI_E', 'GR_E', 'CALI_E', 'DT_E']
         
         
         model_IF = IsolationForest(contamination=0.1, random_state=42)
@@ -859,7 +859,7 @@ def Isolation_Forest_for_Auto_Outlier_Detector(df):
             axes[1].set_title(f"Inliers\n {len(data[data['anomaly']==  1])} points")
             st.pyplot(g)
 
-        outlier_plot(df, 'Isolation Forest', 'NPHI', 'RHOB', [0, 0.8], [3, 1.5]);
+        outlier_plot(df, 'Isolation Forest', 'NPHI_E', 'RHOB_E', [0, 0.8], [3, 1.5]);
         palette = ['#ff7f0e', '#1f77b4']
         pairplot = sns.pairplot(df, vars=anomaly_inputs, hue='anomaly', palette=palette)
         st.pyplot(pairplot)
