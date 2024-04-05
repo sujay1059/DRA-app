@@ -570,7 +570,7 @@ def Unsupervised_Clustering_for_Lithofacies(df):
         num_clusters = st.sidebar.slider('Select number of clusters:', 2, 20, 10)
 
         # Perform KMeans clustering
-        kmeans = KMeans(n_clusters=num_clusters)
+        kmeans = KMeans(n_clusters=10)
         kmeans.fit(data)
 
         # Create a Silhouette Visualizer
