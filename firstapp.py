@@ -790,9 +790,7 @@ def Unsupervised_Clustering_for_Lithofacies(df):
         # Display the visualizer
         st.pyplot()
 
-        # Display the visualizer
-        st.pyplot(visualizer.show())
-        plt.savefig("silhouette_plot.png")
+      
 
         
 
