@@ -827,9 +827,9 @@ def Unsupervised_Clustering_for_Lithofacies(df):
 
 
                
-
+        number = st.number_input("Look at the Silloutte Analysis and enter the optimum cluster:", min_value=1, max_value=10, value=5, step=1)
         # Create the KMeans model with the selected number of clusters
-        kmeans = KMeans(n_clusters=5)
+        kmeans = KMeans(n_clusters=number)
 
         # Fit the model to our dataset
         kmeans.fit(workingdf[['GR_E', 'RHOB_E', 'NPHI_E', 'DT_E']])
