@@ -20,6 +20,7 @@ import matplotlib.colors as colors
 from sklearn.cluster import KMeans
 from sklearn.mixture import GaussianMixture
 from yellowbrick.cluster import SilhouetteVisualizer
+from sklearn.metrics import silhouette_score
 
 st.set_page_config(layout="wide")
 
