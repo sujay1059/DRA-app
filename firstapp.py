@@ -825,6 +825,36 @@ def Unsupervised_Clustering_for_Lithofacies(df):
         # Call the function within the Streamlit app
         optimise_k_means_sillouette(workingdf[['GR_E', 'RHOB_E', 'NPHI_E', 'DT_E']], num_clusters) 
 
+          
+        def optimise_k_means(data, max_k):
+            means = []
+            inertias = []
+            
+            for k in range(1,max_k):
+                kmeans = KMeans(n_clusters=k)
+                kmeans.fit(data)
+                means.append(k)
+                inertias.append(kmeans.inertia_)
+                
+            fig,ax = plt.subplots(figsize=(10, 5))
+            ax.plot(means, inertias, 'o-')
+            ax.set_xlabel("Number of Clusters")
+            ax.set_ylabel("Inertia")
+            ax.grid(True)
+            st.pyplot(fig)
+    
+        workingdf.dropna(inplace =True)
+    
+        optimise_k_means(workingdf[['GR_E', 'RHOB_E', 'NPHI_E', 'DT_E']], num_clusters)
+
+
+
+
+
+
+
+
+        
 
         
         optimum_cluster = st.sidebar.slider('Select the optimum number of cluster:', 2, 20, 5)
@@ -880,8 +910,7 @@ def Unsupervised_Clustering_for_Lithofacies(df):
        
 
         for ax in [ax1, ax2]:
-            ax.set_xlim(0, 0.7)
-            ax.set_ylim(3, 1.5)
+            
             ax.set_ylabel('RHOB', fontsize=18, labelpad=30)
             ax.set_xlabel('NPHI', fontsize=18, labelpad=30)
             ax.grid()
