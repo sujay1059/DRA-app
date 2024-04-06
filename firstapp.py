@@ -890,7 +890,7 @@ def Unsupervised_Clustering_for_Lithofacies(df):
             ax.tick_params(axis='both', labelsize=14)
         plt.tight_layout()
         st.pyplot(fig)
-        pairplot = sns.pairplot(dfs_wells[1], vars=['GR_E', 'RHOB_E','NPHI_E', 'DT_E'], hue='KMeans', palette='Dark2',
+        pairplot = sns.pairplot(dfs_wells[0], vars=['GR_E', 'RHOB_E','NPHI_E', 'DT_E'], hue='KMeans', palette='Dark2',
              diag_kind='kde', plot_kws = {'s': 15, 'marker':'o', 'alpha':1})
         st.pyplot(pairplot)
     else: 
