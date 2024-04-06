@@ -818,7 +818,7 @@ def Unsupervised_Clustering_for_Lithofacies(df):
 
             # Display the plot
             st.pyplot()
-
+            st.write(silhouette_avg)
         
         # Create a sidebar for user input
         st.sidebar.header('Optimize KMeans Silhouette Analysis')
