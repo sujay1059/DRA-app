@@ -785,7 +785,7 @@ def Unsupervised_Clustering_for_Lithofacies(df):
         visualizer = SilhouetteVisualizer(kmeans, colors='yellowbrick')
         
         # Fit the data to the visualizer
-        visualizer.fit(data.data)
+        visualizer.fit(data)
         
         # Display the visualizer
         st.pyplot()
