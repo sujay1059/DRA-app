@@ -1051,7 +1051,7 @@ def Isolation_Forest_for_Auto_Outlier_Detector(df):
         df['anomaly'] = model_IF.predict(df[anomaly_inputs])
 
         def outlier_plot(data, outlier_method_name, x_var, y_var, 
-                    xaxis_limits=[0,1], yaxis_limits=[0,1]):
+                   ):
         
             st.write(f'Outlier Method: {outlier_method_name}')
             
@@ -1064,7 +1064,7 @@ def Isolation_Forest_for_Auto_Outlier_Detector(df):
             g = sns.FacetGrid(data, col='anomaly', height=4, hue='anomaly', hue_order=[1,-1])
             g.map(sns.scatterplot, x_var, y_var)
             g.fig.suptitle(f'Outlier Method: {outlier_method_name}', y=1.10, fontweight='bold')
-            g.set(xlim=xaxis_limits, ylim=yaxis_limits)
+            
             axes = g.axes.flatten()
             axes[0].set_title(f"Outliers\n{len(data[data['anomaly']== -1])} points")
             axes[1].set_title(f"Inliers\n {len(data[data['anomaly']==  1])} points")
