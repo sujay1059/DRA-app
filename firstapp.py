@@ -776,16 +776,19 @@ def Unsupervised_Clustering_for_Lithofacies(df):
            
         data = workingdf[['GR_E', 'RHOB_E']]
 
-        # Create a sidebar for user input
+             # Create a sidebar for user input
         st.sidebar.header('KMeans Silhouette Analysis')
         num_clusters = st.sidebar.slider('Select number of clusters:', 2, 20, 5)
-
+        
         # Fit KMeans clustering
         kmeans = KMeans(n_clusters=num_clusters)
         visualizer = SilhouetteVisualizer(kmeans, colors='yellowbrick')
-
+        
         # Fit the data to the visualizer
-        visualizer.fit(data)
+        visualizer.fit(data.data)
+        
+        # Display the visualizer
+        st.pyplot()
 
         # Display the visualizer
         st.pyplot(visualizer.show())
