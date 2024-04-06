@@ -840,7 +840,7 @@ def Unsupervised_Clustering_for_Lithofacies(df):
         workingdf['KMeans'] = kmeans.labels_
 
         # Create the gmm model with the selected number of clusters/components
-        gmm = GaussianMixture(n_components=5)
+        gmm = GaussianMixture(n_components=optimum_cluster)
 
         # Fit the model to our dataset
         gmm.fit(workingdf[['GR_E', 'RHOB_E', 'NPHI_E', 'DT_E']])
