@@ -61,21 +61,30 @@ def min_max(df):
 
 
 
-        rows = round(columns/2)
-        cols = 2
+                # Assuming df is defined elsewhere
 
-        fig,ax=plt.subplots(figsize=(10,10))
+    # Filter columns that end with "_E"
+    cols_to_plot = [col for col in df.columns if col.endswith("_E")]
 
-        cols_to_plot.remove("DEPTH")
-        for i, feature in enumerate(cols_to_plot):
-            ax=fig.add_subplot(rows,cols,i+1)
-            df[feature].hist(bins=20,ax=ax,facecolor='green', alpha=0.6)
-            ax.set_title(feature+" Distribution")
-            ax.set_axisbelow(True)
-            ax.grid(color='whitesmoke')
+    num_cols = len(cols_to_plot)
+    cols = 2
+    rows = (num_cols + 1) // cols  # Add 1 to ensure at least 1 row if num_cols is less than cols
 
-        plt.tight_layout()  
-        st.pyplot(fig)
+    fig, axes = plt.subplots(rows, cols, figsize=(10, 5 * rows))
+
+    for i, feature in enumerate(cols_to_plot):
+        row_index = i // cols
+        col_index = i % cols
+
+        ax = axes[row_index, col_index] if rows > 1 else axes[col_index]
+        df[feature].hist(bins=10, ax=ax, facecolor='green', alpha=0.6)
+
+        ax.set_title(feature + " Distribution")
+        ax.set_axisbelow(True)
+        ax.grid(color='whitesmoke')
+
+    plt.tight_layout()
+    st.pyplot(fig)
 
 
 
