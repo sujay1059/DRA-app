@@ -890,7 +890,7 @@ def Unsupervised_Clustering_for_Lithofacies(df):
             ax.tick_params(axis='both', labelsize=14)
         plt.tight_layout()
         
-        sns.pairplot(dfs_wells[1], vars=['GR_E', 'RHOB_E','NPHI_E', 'DT_E'], hue='KMeans', palette='Dark2',
+        sns.pairplot(dfs_wells[0], vars=['GR_E', 'RHOB_E','NPHI_E', 'DT_E'], hue='KMeans', palette='Dark2',
              diag_kind='kde', plot_kws = {'s': 15, 'marker':'o', 'alpha':1})
     else: 
         st.write("Sorry, unable to generate output. Data format does not match our requirements.")
