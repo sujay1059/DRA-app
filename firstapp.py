@@ -820,12 +820,10 @@ def Unsupervised_Clustering_for_Lithofacies(df):
             st.pyplot()
             st.write(silhouette_avg)
         
-        # Create a sidebar for user input
-        st.sidebar.header('Optimize KMeans Silhouette Analysis')
-        max_clusters = st.sidebar.slider('Select maximum number of clusters:', 2, 20, 5)
+       
 
         # Call the function within the Streamlit app
-        optimise_k_means_sillouette(workingdf[['GR_E', 'RHOB_E', 'NPHI_E', 'DT_E']], max_clusters)
+        optimise_k_means_sillouette(workingdf[['GR_E', 'RHOB_E', 'NPHI_E', 'DT_E']], num_clusters) 
 
 
                
