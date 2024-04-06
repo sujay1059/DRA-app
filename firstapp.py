@@ -73,9 +73,179 @@ def min_max(df):
 def logplots(df):
 
 
-    required_columns = ['GR_E','DEPTH','RESD_E','RHOB_E','DT_E','NPHI_E','RESM_E','CALI_E','RESS_E']
-         #Create the figure
-    if all(col in df.columns for col in required_columns):
+        df.replace(to_replace=r'^[a-zA-Z]+$', value=-999.00, regex=True, inplace=True)
+
+        well_nan = df.notnull() * 1
+
+        fig, ax = plt.subplots(figsize=(15,10))
+
+        #Set up the plot axes
+        ax1 = plt.subplot2grid((1,6), (0,0), rowspan=1, colspan = 1)
+        ax2 = plt.subplot2grid((1,6), (0,1), rowspan=1, colspan = 1, sharey = ax1)
+        ax3 = plt.subplot2grid((1,6), (0,2), rowspan=1, colspan = 1, sharey = ax1)
+        ax4 = plt.subplot2grid((1,6), (0,3), rowspan=1, colspan = 1, sharey = ax1)
+        ax5 = ax3.twiny() #Twins the y-axis for the density track with the neutron track
+        ax6 = plt.subplot2grid((1,6), (0,4), rowspan=1, colspan = 1, sharey = ax1)
+        ax7 = ax2.twiny()
+        ax8 = ax2.twiny()
+
+        # As our curve scales will be detached from the top of the track,
+        # this code adds the top border back in without dealing with splines
+        ax10 = ax1.twiny()
+        ax10.xaxis.set_visible(False)
+        ax11 = ax2.twiny()
+        ax11.xaxis.set_visible(False)
+        ax12 = ax3.twiny()
+        ax12.xaxis.set_visible(False)
+        ax13 = ax4.twiny()
+        ax13.xaxis.set_visible(False)
+        ax14 = ax6.twiny()
+        ax14.xaxis.set_visible(False)
+
+        # Gamma Ray track
+        if 'GR_E' in df.columns:
+            ax1.plot(df["GR_E"], df["DEPTH"], color = "green", linewidth = 0.5)
+            ax1.set_xlabel("Gamma")
+            ax1.xaxis.label.set_color("green")
+        
+            ax1.set_ylabel("Depth (m)")
+            ax1.tick_params(axis='x', colors="green")
+            ax1.spines["top"].set_edgecolor("green")
+            ax1.title.set_color('green')
+      
+
+        # Resistivity track
+        if 'RESD_E' in df.columns:
+            ax2.plot("RESD_E", "DEPTH", data = df, color = "red", linewidth = 0.5)
+            ax2.set_xlabel("Resistivity - Deep")
+            
+            ax2.xaxis.label.set_color("red")
+            ax2.tick_params(axis='x', colors="red")
+            ax2.spines["top"].set_edgecolor("red")
+        
+            ax2.semilogx()
+
+        # Density track
+        if 'RHOB_E' in df.columns:
+            ax3.plot("RHOB_E", "DEPTH", data = df, color = "red", linewidth = 0.5)
+            ax3.set_xlabel("Density")
+            ax3.set_xlim(df['RHOB_E'].min(), df['RHOB_E'].max())
+            ax3.xaxis.label.set_color("red")
+            ax3.tick_params(axis='x', colors="red")
+            ax3.spines["top"].set_edgecolor("red")
+      
+
+        # Sonic track
+        if 'DT_E' in df.columns:
+            ax4.plot("DT_E", "DEPTH", data = df, color = "purple", linewidth = 0.5)
+            ax4.set_xlabel("Sonic")
+            
+            ax4.xaxis.label.set_color("purple")
+            ax4.tick_params(axis='x', colors="purple")
+            ax4.spines["top"].set_edgecolor("purple")
+
+            # Neutron track placed ontop of density track
+        if 'NPHI_E' in df.columns:
+            ax5.plot("NPHI_E", "DEPTH", data = df, color = "blue", linewidth = 0.5)
+            ax5.set_xlabel('Neutron')
+            ax5.xaxis.label.set_color("blue")
+            ax5.set_xlim(df['NPHI_E'].max(), df['NPHI_E'].min())
+        
+            ax5.tick_params(axis='x', colors="blue")
+            ax5.spines["top"].set_position(("axes", 1.08))
+            ax5.spines["top"].set_visible(True)
+            ax5.spines["top"].set_edgecolor("blue")
+        
+
+        # Caliper track
+        if 'CALI_E' in df.columns:
+            ax6.plot("CALI_E", "DEPTH", data = df, color = "black", linewidth = 0.5)
+            ax6.set_xlabel("Caliper")
+        
+            ax6.xaxis.label.set_color("black")
+            ax6.tick_params(axis='x', colors="black")
+            ax6.spines["top"].set_edgecolor("black")
+            ax6.fill_betweenx(well_nan.index, 8.5, df["CALI_E"], facecolor='yellow')
+        
+
+        # Resistivity track - Curve 2
+        if 'RESM_E' in df.columns:
+            ax7.plot("RESM_E", "DEPTH", data = df, color = "green", linewidth = 0.5)
+            ax7.set_xlabel("Resistivity - Med")
+        
+            ax7.xaxis.label.set_color("green")
+            ax7.spines["top"].set_position(("axes", 1.16))
+            ax7.spines["top"].set_visible(True)
+            ax7.tick_params(axis='x', colors="green")
+            ax7.spines["top"].set_edgecolor("green")
+            
+            ax7.semilogx()
+
+        # Resistivity track - Curve 2
+        if 'RESS_E' in df.columns:
+            ax8.plot("RESS_E", "DEPTH", data = df, color = "blue", linewidth = 0.5)
+            ax8.set_xlabel("Resistivity - Sha")
+        
+            ax8.xaxis.label.set_color("blue")
+            ax8.spines["top"].set_position(("axes", 1.09))
+            ax8.spines["top"].set_visible(True)
+            ax8.tick_params(axis='x', colors="blue")
+            ax8.spines["top"].set_edgecolor("blue")
+            
+            ax8.semilogx()
+
+        x1=df['RHOB_E']
+        x2=df['NPHI_E']
+
+        x = np.array(ax3.get_xlim())
+        z = np.array(ax5.get_xlim())
+
+        nz=((x2-np.max(z))/(np.min(z)-np.max(z)))*(np.max(x)-np.min(x))+np.min(x)
+       
+        ax3.fill_betweenx(df['DEPTH'], x1, nz, where=x1>=nz, interpolate=True, color='green')
+        ax3.fill_betweenx(df['DEPTH'], x1, nz, where=x1<=nz, interpolate=True, color='yellow')       
+
+        # Common functions for setting up the plot can be extracted into
+        # a for loop. This saves repeating code.
+        for ax in [ax1, ax2, ax3, ax4, ax6]:
+           
+            ax.grid(which='major', color='lightgrey', linestyle='-')
+            ax.xaxis.set_ticks_position("top")
+            ax.xaxis.set_label_position("top")
+            ax.spines["top"].set_position(("axes", 1.02))
+            
+            
+        for ax in [ax2, ax3, ax4, ax6]:
+            plt.setp(ax.get_yticklabels(), visible = False)
+            
+        plt.tight_layout()
+        fig.subplots_adjust(wspace = 0.15)
+        
+        st.pyplot(fig)
+
+
+
+
+
+
+
+
+
+
+
+        
+        st.header("Adjusted Log Plot")
+
+
+
+
+
+                # Calculate the 95th percentile for "Gamma" and "Caliper"
+        gamma_95th_percentile = np.nanpercentile(df["GR_E"], 95)
+        caliper_95th_percentile = np.nanpercentile(df["CALI_E"], 95)
+        
+
+
 
         df.replace(to_replace=r'^[a-zA-Z]+$', value=-999.00, regex=True, inplace=True)
 
@@ -108,32 +278,35 @@ def logplots(df):
 
         # Gamma Ray track
         if 'GR_E' in df.columns:
-            ax1.plot(df["GR_E"], df.index, color = "green", linewidth = 0.5)
+            gamma_values = df["GR_E"]
+            gamma_values[gamma_values >= gamma_95th_percentile] = np.nan  # Set values >= 95th percentile to NaN
+            ax1.plot(gamma_values, df["DEPTH"], color="green", linewidth=0.5)
             ax1.set_xlabel("Gamma")
             ax1.xaxis.label.set_color("green")
-        
-            ax1.set_ylabel("Depth (m)")
+            ax1.set_ylabel("Depth (ft)")
             ax1.tick_params(axis='x', colors="green")
             ax1.spines["top"].set_edgecolor("green")
             ax1.title.set_color('green')
+           
       
 
         # Resistivity track
         if 'RESD_E' in df.columns:
-            ax2.plot(df["RESD_E"], df.index, color = "red", linewidth = 0.5)
+            ax2.plot("RESD_E", "DEPTH", data = df, color = "red", linewidth = 0.5)
             ax2.set_xlabel("Resistivity - Deep")
             
             ax2.xaxis.label.set_color("red")
             ax2.tick_params(axis='x', colors="red")
             ax2.spines["top"].set_edgecolor("red")
-        
+           
             ax2.semilogx()
 
         # Density track
         if 'RHOB_E' in df.columns:
-            ax3.plot(df["RHOB_E"], df.index, color = "red", linewidth = 0.5)
+            ax3.plot("RHOB_E", "DEPTH", data = df, color = "red", linewidth = 0.5)
             ax3.set_xlabel("Density")
             
+            ax3.set_xlim(df['RHOB_E'].min(), df['RHOB_E'].max())
             ax3.xaxis.label.set_color("red")
             ax3.tick_params(axis='x', colors="red")
             ax3.spines["top"].set_edgecolor("red")
@@ -141,7 +314,7 @@ def logplots(df):
 
         # Sonic track
         if 'DT_E' in df.columns:
-            ax4.plot(df["DT_E"], df.index, color = "purple", linewidth = 0.5)
+            ax4.plot("DT_E", "DEPTH", data = df, color = "purple", linewidth = 0.5)
             ax4.set_xlabel("Sonic")
             
             ax4.xaxis.label.set_color("purple")
@@ -150,10 +323,10 @@ def logplots(df):
 
             # Neutron track placed ontop of density track
         if 'NPHI_E' in df.columns:
-            ax5.plot(df["NPHI_E"], df.index, color = "blue", linewidth = 0.5)
+            ax5.plot("NPHI_E", "DEPTH", data = df, color = "blue", linewidth = 0.5)
             ax5.set_xlabel('Neutron')
             ax5.xaxis.label.set_color("blue")
-            
+            ax5.set_xlim(df['NPHI_E'].max(), df['NPHI_E'].min())
         
             ax5.tick_params(axis='x', colors="blue")
             ax5.spines["top"].set_position(("axes", 1.08))
@@ -162,19 +335,21 @@ def logplots(df):
         
 
         # Caliper track
+    # Caliper track
         if 'CALI_E' in df.columns:
-            ax6.plot(df["CALI_E"], df.index, color = "black", linewidth = 0.5)
+            caliper_values = df["CALI_E"]
+            caliper_values[caliper_values >= caliper_95th_percentile] = np.nan  # Set values >= 95th percentile to NaN
+            ax6.plot(caliper_values, df["DEPTH"], color="black", linewidth=0.5)
             ax6.set_xlabel("Caliper")
-        
             ax6.xaxis.label.set_color("black")
             ax6.tick_params(axis='x', colors="black")
             ax6.spines["top"].set_edgecolor("black")
-            ax6.fill_betweenx(well_nan.index, 8.5, df["CALI_E"], facecolor='yellow')
+            ax6.fill_betweenx(df['DEPTH'], 8.5, df["CALI_E"], facecolor='yellow')
         
 
         # Resistivity track - Curve 2
         if 'RESM_E' in df.columns:
-            ax7.plot(df["RESM_E"], df.index, color = "green", linewidth = 0.5)
+            ax7.plot("RESM_E", "DEPTH", data = df, color = "green", linewidth = 0.5)
             ax7.set_xlabel("Resistivity - Med")
         
             ax7.xaxis.label.set_color("green")
@@ -187,7 +362,7 @@ def logplots(df):
 
         # Resistivity track - Curve 2
         if 'RESS_E' in df.columns:
-            ax8.plot(df["RESS_E"], df.index, color = "blue", linewidth = 0.5)
+            ax8.plot("RESS_E", "DEPTH", data = df, color = "blue", linewidth = 0.5)
             ax8.set_xlabel("Resistivity - Sha")
         
             ax8.xaxis.label.set_color("blue")
@@ -197,6 +372,23 @@ def logplots(df):
             ax8.spines["top"].set_edgecolor("blue")
             
             ax8.semilogx()
+
+        
+
+                # Adding in neutron density shading
+        x1=df['RHOB_E']
+        x2=df['NPHI_E']
+
+        x = np.array(ax3.get_xlim())
+        z = np.array(ax5.get_xlim())
+
+        nz=((x2-np.max(z))/(np.min(z)-np.max(z)))*(np.max(x)-np.min(x))+np.min(x)
+       
+        ax3.fill_betweenx(df['DEPTH'], x1, nz, where=x1>=nz, interpolate=True, color='green')
+        ax3.fill_betweenx(df['DEPTH'], x1, nz, where=x1<=nz, interpolate=True, color='yellow')
+
+
+
 
 
         # Common functions for setting up the plot can be extracted into
@@ -216,6 +408,7 @@ def logplots(df):
         fig.subplots_adjust(wspace = 0.15)
         
         st.pyplot(fig)
+
 
         
     
