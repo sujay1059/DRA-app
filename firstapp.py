@@ -1070,7 +1070,7 @@ def Isolation_Forest_for_Auto_Outlier_Detector(df):
             axes[1].set_title(f"Inliers\n {len(data[data['anomaly']==  1])} points")
             st.pyplot(g)
 
-        outlier_plot(df, 'Isolation Forest', 'NPHI_E', 'RHOB_E', [0, 0.8], [3, 1.5]);
+        outlier_plot(df, 'Isolation Forest', 'NPHI_E', 'RHOB_E');
         palette = ['#ff7f0e', '#1f77b4']
         pairplot = sns.pairplot(df, vars=anomaly_inputs, hue='anomaly', palette=palette)
         st.pyplot(pairplot)
