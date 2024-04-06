@@ -843,7 +843,7 @@ def Unsupervised_Clustering_for_Lithofacies(df):
         gmm = GaussianMixture(n_components=5)
 
         # Fit the model to our dataset
-        gmm.fit(workingdf[['GR_E', 'RHOB_E', 'NPHI_E', 'DTC_E']])
+        gmm.fit(workingdf[['GR_E', 'RHOB_E', 'NPHI_E', 'DT_E']])
 
         # Predict the labels
         gmm_labels = gmm.predict(workingdf[['GR_E', 'RHOB_E', 'NPHI_E', 'DT_E']])
