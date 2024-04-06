@@ -108,7 +108,7 @@ def logplots(df):
             ax1.set_xlabel("Gamma")
             ax1.xaxis.label.set_color("green")
         
-            ax1.set_ylabel("Depth (m)")
+            ax1.set_ylabel("Depth (ft)")
             ax1.tick_params(axis='x', colors="green")
             ax1.spines["top"].set_edgecolor("green")
             ax1.title.set_color('green')
