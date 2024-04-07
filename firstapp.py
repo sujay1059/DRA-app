@@ -32,7 +32,7 @@ st.set_page_config(layout="wide")
 # Functions for each of the pages
 
 def interactive_plot():
-    col1, col2, col3 = st.columns(3)
+    col1, col2 = st.columns(2)
 
     x_axis_val = col1.selectbox('Select the X-axis', options=df.columns)
     x_scale = col1.selectbox('Select the X-axis scale', options=['linear', 'log'])
@@ -47,7 +47,8 @@ def interactive_plot():
     if y_scale == 'log':
         plot.update_yaxes(type='log')
 
-    col3.plotly_chart(plot, use_container_width=True)
+    st.plotly_chart(plot, use_container_width=True)
+
 
 def min_max(df):
 
