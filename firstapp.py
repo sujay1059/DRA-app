@@ -778,7 +778,7 @@ def Unsupervised_Clustering_for_Lithofacies(df):
         data = workingdf[['GR_E', 'RHOB_E']]
 
              # Create a sidebar for user input
-        st.sidebar.header('KMeans Silhouette Analysis')
+        st.sidebar.header('KMeans Silhouette/Elbow Analysis')
         num_clusters = st.sidebar.slider('Select number of clusters:', 2, 20, 5)
         
         # Fit KMeans clustering
@@ -810,10 +810,11 @@ def Unsupervised_Clustering_for_Lithofacies(df):
                 silhouette_avg.append(silhouette_score(data, cluster_labels))
 
             # Plot the silhouette scores
+            
             plt.plot(range_n_clusters, silhouette_avg, 'bo-')
             plt.xlabel("Number of Clusters")
             plt.ylabel('Silhouette Score')
-            plt.title('Silhouette Analysis For KMeans')
+            plt.title('Silhouette Analysis For KMeans Clustering')
             plt.grid(True)
 
             # Display the plot
@@ -840,6 +841,7 @@ def Unsupervised_Clustering_for_Lithofacies(df):
             ax.plot(means, inertias, 'o-')
             ax.set_xlabel("Number of Clusters")
             ax.set_ylabel("Inertia")
+            plt.title('Elbow Method For KMeans Clustering')
             ax.grid(True)
             st.pyplot(fig)
     
@@ -857,7 +859,7 @@ def Unsupervised_Clustering_for_Lithofacies(df):
        
 
         
-        optimum_cluster = st.sidebar.selectbox('Select the optimum number of cluster:',list(range(2, 21)), 5)
+        optimum_cluster = st.sidebar.selectbox('Select the optimum number of cluster using Elbow and Sillouette analysis:',list(range(2, 21)), 5)
 
 
         # Create the KMeans model with the selected number of clusters
