@@ -788,6 +788,9 @@ def Unsupervised_Clustering_for_Lithofacies(df):
         
         # Fit the data to the visualizer
         visualizer.fit(data)
+        ax.set_title("Silhouette Analysis For KMeans Clustering")
+        ax.set_xlabel("Silhouette coefficient values")
+        ax.set_ylabel("Cluster label")
         
         # Display the visualizer
         st.pyplot(fig)
