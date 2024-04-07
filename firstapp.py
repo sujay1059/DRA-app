@@ -483,10 +483,11 @@ def outlier(df):
     
         
         df.dropna(inplace=True)
-        
+        st.write("Identifying Outliers with Box Plots")
         red_circle = dict(markerfacecolor='red', marker='o', markeredgecolor='white')
 
         fig, axs = plt.subplots(1, len(df.columns), figsize=(30,10))
+        
 
         for i, ax in enumerate(axs.flat):
             ax.boxplot(df.iloc[:,i], flierprops=red_circle)
@@ -498,6 +499,7 @@ def outlier(df):
                 ax.semilogy()
             
         plt.tight_layout()
+    
         fig = plt.gcf()
         st.pyplot(fig)
     else: 
