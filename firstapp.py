@@ -455,7 +455,7 @@ def missingvalues(df):
 
 def outlier(df):
 
-    
+    st.write("Identifying Outliers with Box Plots")
     df_e = pd.DataFrame()  # Initialize DataFrame for columns ending with "_E"
     df_f = pd.DataFrame()  # Initialize DataFrame for columns ending with "_F"
     df_s = pd.DataFrame()  # Initialize DataFrame for columns ending with "_S"
@@ -483,7 +483,7 @@ def outlier(df):
     
         
         df.dropna(inplace=True)
-        st.write("Identifying Outliers with Box Plots")
+       
         red_circle = dict(markerfacecolor='red', marker='o', markeredgecolor='white')
 
         fig, axs = plt.subplots(1, len(df.columns), figsize=(30,10))
