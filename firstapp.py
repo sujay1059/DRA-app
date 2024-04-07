@@ -922,8 +922,13 @@ def Unsupervised_Clustering_for_Lithofacies(df):
         pairplot = sns.pairplot(dfs_wells[0], vars=['GR_E', 'RHOB_E','NPHI_E', 'DT_E'], hue='KMeans', palette='Dark2',
              diag_kind='kde', plot_kws = {'s': 15, 'marker':'o', 'alpha':1})
         st.pyplot(pairplot)
+        
+        pairplot = sns.pairplot(dfs_wells[0], vars=['GR_E', 'RHOB_E','NPHI_E', 'DT_E'], hue='GMM', palette='Dark2',
+             diag_kind='kde', plot_kws = {'s': 15, 'marker':'o', 'alpha':1})
+        st.pyplot(pairplot)
     else: 
         st.write("Sorry, unable to generate output. Data format does not match our requirements.")
+        
 
 
 def Random_Forest_For_Lithology_Classification(df):
