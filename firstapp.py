@@ -22,6 +22,11 @@ from sklearn.mixture import GaussianMixture
 from yellowbrick.cluster import SilhouetteVisualizer
 from sklearn.metrics import silhouette_score
 
+from sklearn.model_selection import train_test_split
+from sklearn.neural_network import MLPRegressor
+from sklearn.preprocessing import StandardScaler
+from sklearn import metrics
+
 st.set_page_config(layout="wide")
 
 # Functions for each of the pages
