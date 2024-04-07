@@ -1107,7 +1107,7 @@ def Random_Forest_for_LinearRegression(df):
             fig, ax = plt.subplots(figsize=(15, 5))
             plt.plot(test_well['DEPTH'], test_well['DT_E'], label='Actual DT')
             plt.plot(test_well['DEPTH'], test_well['TEST_DT'], label='Predicted DT')
-            plt.xlabel('Depth (m)')
+            plt.xlabel('Depth (ft)')
             plt.ylabel('DT')
             plt.ylim(40, 140)
             plt.legend()
