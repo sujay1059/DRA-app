@@ -818,7 +818,7 @@ def Unsupervised_Clustering_for_Lithofacies(df):
 
             # Display the plot
             st.pyplot()
-            st.write(silhouette_avg)
+           
         
        
 
