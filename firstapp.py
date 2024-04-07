@@ -494,7 +494,7 @@ def outlier(df):
             ax.tick_params(axis='y', labelsize=14)
             
             #Checking if column names are equal to columns we expect to be logarithmic
-            if df.columns[i] == 'RDEP' or df.columns[i] == 'RMED':
+            if df.columns[i] == 'RESD_E' or df.columns[i] == 'RESM_E':
                 ax.semilogy()
             
         plt.tight_layout()
