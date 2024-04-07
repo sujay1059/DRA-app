@@ -1570,7 +1570,7 @@ def SIDEBAR4(df):
 
 
 # Add a title and intro text
-st.title('CARBON SENSE AI')
+st.title('LOG LENSE AI 🤖')
 st.text('This is a web app that allows exploration, engineering and application of machine learning models on Petrophysics Data')
 
 # Load the image
