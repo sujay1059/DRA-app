@@ -813,17 +813,17 @@ def Unsupervised_Clustering_for_Lithofacies(df):
             # Plot the silhouette scores
             
                     # Create a new figure
-        fig, ax = plt.subplots()
-        
-        # Plotting the graph
-        ax.plot(range_n_clusters, silhouette_avg, 'bo-')
-        ax.set_xlabel("Number of Clusters")
-        ax.set_ylabel('Silhouette Score')
-        ax.set_title('Silhouette Analysis For KMeans Clustering')
-        ax.grid(True)
-        
-        # Display the plot in Streamlit
-        st.pyplot(fig)
+            fig, ax = plt.subplots()
+            
+            # Plotting the graph
+            ax.plot(range_n_clusters, silhouette_avg, 'bo-')
+            ax.set_xlabel("Number of Clusters")
+            ax.set_ylabel('Silhouette Score')
+            ax.set_title('Silhouette Analysis For KMeans Clustering')
+            ax.grid(True)
+            
+            # Display the plot in Streamlit
+            st.pyplot(fig)
            
         
        
