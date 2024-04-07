@@ -1216,6 +1216,7 @@ def Random_Forest_for_LinearRegression(df):
             plt.ylim(40, 140)
             plt.ylabel('Predicted DT')
             plt.xlabel('Actual DT')
+            plt.title('Random Forest regression on training data')
             plt.plot([40,140], [40,140], 'black') #1 to 1 line
             st.pyplot(fig)
             
@@ -1227,13 +1228,14 @@ def Random_Forest_for_LinearRegression(df):
 
 
             test_well['TEST_DT'] = regr.predict(test_well_x)
-
+            st.write("### Using built model to predict DT")
             fig,ax = plt.subplots()
             plt.scatter(test_well['DT_E'], test_well['TEST_DT'])
             plt.xlim(40, 140)
             plt.ylim(40, 140)
             plt.ylabel('Predicted DT')
             plt.xlabel('Actual DT')
+            
             plt.plot([40,140], [40,140], 'black') #1 to 1 line
             st.pyplot(fig)
 
