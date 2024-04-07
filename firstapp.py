@@ -1001,81 +1001,136 @@ def Random_Forest_For_Lithology_Classification(df):
 
 def Random_Forest_for_LinearRegression(df):
 
+    st.markdown("<p style='font-size: 16px;'>Please upload a training data for the model</p>", unsafe_allow_html=True)
 
+    
+    training_wells = None
+    file_type = st.radio("Select file type:", ("LAS", "CSV"), key = 'file_type')
 
-    required_columns = ['WELL','DEPTH', 'RHOB', 'GR', 'NPHI', 'PEF', 'DT']
-        #Create the figure
-    if all(col in df.columns for col in required_columns): 
+    
 
-        df = df[['WELL', 'DEPTH', 'RHOB', 'GR', 'NPHI', 'PEF', 'DT']].copy()
+    if file_type == "LAS":
+        las_file = st.file_uploader("Upload LAS file", type=["las"], key="las_file")
+        if las_file is not None:
+            try:
+                    bytes_data = las_file.read()
+                    str_io = StringIO(bytes_data.decode('Windows-1252'))
+                    las_file = lasio.read(str_io)
+                    training_wells = las_file.df()
+                    training_wells['DEPTH'] = training_wells.index
 
-            # Training Wells
-        training_wells = ['15/9-F-11 B', '15/9-F-11 A', '15/9-F-1 A']
-
-        # Test Well
-        test_well = ['15/9-F-1 B']
-
-        train_val_df = df[df['WELL'].isin(training_wells)].copy()
-        test_df = df[df['WELL'].isin(test_well)].copy()
-
-        train_val_df.dropna(inplace=True)
-        test_df.dropna(inplace=True)
-
-        from sklearn.model_selection import train_test_split
-        from sklearn import metrics
-        from sklearn.ensemble import RandomForestRegressor
-
-        X = train_val_df[['RHOB', 'GR', 'NPHI', 'PEF']]
-        y = train_val_df['DT']
-
-        X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2)
-
-        regr = RandomForestRegressor()
-
-        regr.fit(X_train, y_train)
-
-        y_pred = regr.predict(X_val)
-
-        metrics.mean_absolute_error(y_val, y_pred)
-
-        mse = metrics.mean_squared_error(y_val, y_pred)
-        rmse = mse**0.5 
-
-        fig,ax = plt.subplots()
-        plt.scatter(y_val, y_pred)
-        plt.xlim(40, 140)
-        plt.ylim(40, 140)
-        plt.ylabel('Predicted DT')
-        plt.xlabel('Actual DT')
-        plt.plot([40,140], [40,140], 'black') #1 to 1 line
-        st.pyplot(fig)
+            except UnicodeDecodeError as e:
+                    st.error(f"error loading log.las: {e}")
+                    training_wells=None
         
 
-        test_well_x = test_df[['RHOB', 'GR', 'NPHI', 'PEF']]
-
-        test_df['TEST_DT'] = regr.predict(test_well_x)
-
-        fig,ax = plt.subplots()
-        plt.scatter(test_df['DT'], test_df['TEST_DT'])
-        plt.xlim(40, 140)
-        plt.ylim(40, 140)
-        plt.ylabel('Predicted DT')
-        plt.xlabel('Actual DT')
-        plt.plot([40,140], [40,140], 'black') #1 to 1 line
-        st.pyplot(fig)
 
 
-        fig, ax = plt.subplots(figsize=(15, 5))
-        plt.plot(test_df['DEPTH'], test_df['DT'], label='Actual DT')
-        plt.plot(test_df['DEPTH'], test_df['TEST_DT'], label='Predicted DT')
-        plt.xlabel('Depth (m)')
-        plt.ylabel('DT')
-        plt.ylim(40, 140)
-        plt.legend()
-        plt.grid()
-        st.pyplot(fig)
-    else: 
-        st.write("Sorry, unable to generate output. Data format does not match our requirements.")
+
+
+
+            
+    elif file_type == "CSV":
+        csv_file = st.file_uploader("Upload CSV file", type=["csv"])
+        if csv_file is not None:
+            st.success("CSV file uploaded successfully!")
+            # Process CSV file
+            training_wells = pd.read_csv(csv_file)
+
+
+
+            
+    if training_wells is not None: 
+        required_columns = [ 'RHOB_E', 'GR_E', 'NPHI_E', 'DT_E','PE_E','DEPTH']
+            #Create the figure
+        if all(col in df.columns for col in required_columns) and \
+            all(col in training_wells.columns for col in required_columns): 
+
+            df = df[[ 'RHOB_E', 'GR_E', 'NPHI_E', 'DT_E','PE_E','DEPTH']].copy()
+
+                # Training Wells
+            training_data = training_wells[['RHOB_E', 'GR_E', 'NPHI_E', 'DT_E','PE_E','DEPTH']]
+
+            # Test Well
+            test_well = df[['RHOB_E', 'GR_E', 'NPHI_E', 'DT_E','PE_E','DEPTH']]
+
+
+            
+
+            training_data.dropna(inplace=True)
+            test_well.dropna(inplace=True)
+
+            from sklearn.model_selection import train_test_split
+            from sklearn import metrics
+            from sklearn.ensemble import RandomForestRegressor
+
+            X = training_data[['RHOB_E', 'GR_E', 'NPHI_E','PE_E']]
+            y = training_data['DT_E']
+
+            X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2)
+
+            regr = RandomForestRegressor()
+
+            regr.fit(X_train, y_train)
+
+            y_pred = regr.predict(X_val)
+
+            metrics.mean_absolute_error(y_val, y_pred)
+
+            mse = metrics.mean_squared_error(y_val, y_pred)
+            rmse = mse**0.5 
+
+            fig,ax = plt.subplots()
+            plt.scatter(y_val, y_pred)
+            plt.xlim(40, 140)
+            plt.ylim(40, 140)
+            plt.ylabel('Predicted DT')
+            plt.xlabel('Actual DT')
+            plt.plot([40,140], [40,140], 'black') #1 to 1 line
+            st.pyplot(fig)
+            
+
+            test_well_x = test_well[['RHOB_E', 'GR_E', 'NPHI_E','PE_E']]
+
+            test_well['TEST_DT'] = regr.predict(test_well_x)
+
+            fig,ax = plt.subplots()
+            plt.scatter(test_well['DT_E'], test_well['TEST_DT'])
+            plt.xlim(40, 140)
+            plt.ylim(40, 140)
+            plt.ylabel('Predicted DT')
+            plt.xlabel('Actual DT')
+            plt.plot([40,140], [40,140], 'black') #1 to 1 line
+            st.pyplot(fig)
+
+
+            fig, ax = plt.subplots(figsize=(15, 5))
+            plt.plot(test_well['DEPTH'], test_well['DT_E'], label='Actual DT')
+            plt.plot(test_well['DEPTH'], test_well['TEST_DT'], label='Predicted DT')
+            plt.xlabel('Depth (m)')
+            plt.ylabel('DT')
+            plt.ylim(40, 140)
+            plt.legend()
+            plt.grid()
+            st.pyplot(fig)
+
+
+            residuals = y_val - y_pred
+            # Plot scatter plot for residuals
+            fig, ax = plt.subplots()
+            ax.scatter(y_val, residuals, color='blue', alpha=0.5)
+            ax.axhline(y=0, color='black', linestyle='--')  # Add a horizontal line at y=0
+            ax.set_title('Residuals vs Actual Values')
+            ax.set_xlabel('Actual Values')
+            ax.set_ylabel('Residuals')
+            st.pyplot(fig)
+
+            
+
+
+        else: 
+            st.write("Sorry, unable to generate output. Data format does not match our requirements.")
+
 
 def Isolation_Forest_for_Auto_Outlier_Detector(df):
  
