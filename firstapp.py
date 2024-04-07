@@ -549,41 +549,147 @@ def normalization(df):
 
 
 def poro(df):
-    required_columns = ['CPOR','DEPTH','CKHG']
-        #Create the figure
-    if all(col in df.columns for col in required_columns):
+
+    st.markdown("<p style='font-size: 16px;'>Please upload a Core Data for the Log</p>", unsafe_allow_html=True)
+
+    
+    training_wells = None
+    file_type = st.radio("Select file type:", ("LAS", "CSV"), key = 'file_type')
 
     
 
-        x = df['CPOR']
-        x = sm.add_constant(x)
-        y   = np.log10(df['CKHG'])
-        st.header('Plot of Data')
+    if file_type == "LAS":
+        las_file = st.file_uploader("Upload LAS file", type=["las"], key="las_file")
+        if las_file is not None:
+            try:
+                    bytes_data = las_file.read()
+                    str_io = StringIO(bytes_data.decode('Windows-1252'))
+                    las_file = lasio.read(str_io)
+                    training_wells = las_file.df()
+                    training_wells['DEPTH'] = training_wells.index
 
-        model = sm.OLS(y, x, missing='drop')
-        results = model.fit()
+            except UnicodeDecodeError as e:
+                    st.error(f"error loading log.las: {e}")
+                    training_wells=None
         
-        fig, ax = plt.subplots(1,1)
-        from matplotlib.ticker import FuncFormatter
+            
+    elif file_type == "CSV":
+        csv_file = st.file_uploader("Upload CSV file", type=["csv"])
+        if csv_file is not None:
+            st.success("CSV file uploaded successfully!")
+            # Process CSV file
+            training_wells = pd.read_csv(csv_file)
 
-        ax.axis([0, 30, 0.01, 100000])
-        ax.semilogy(df['CPOR'], df['CKHG'], 'bo')
 
-        ax.grid(True)
-        ax.set_ylabel('Core Perm (mD)')
-        ax.set_xlabel('Core Porosity (%)')
 
-        ax.semilogy(df['CPOR'], 10**(results.params[1] * df['CPOR'] + results.params[0]), 'r-')
 
-    #Format the axes so that they show whole numbers
-        for axis in [ax.yaxis, ax.xaxis]:
-            formatter = FuncFormatter(lambda y, _: '{:.16g}'.format(y))
-            axis.set_major_formatter(formatter)    
+
+
+    if training_wells is not None: 
+        required_columns = ['CPOR','DEPTH','CKHG']
+            #Create the figure
+        if all(col in training_wells.columns for col in required_columns):
+
         
-        st.pyplot(fig)
-    else: 
-        st.write("Sorry, unable to generate output. Data format does not match our requirements.")
-    
+
+            x = training_wells['CPOR']
+            x = sm.add_constant(x)
+            y   = np.log10(training_wells['CKHG'])
+            st.header('Plot of Data')
+
+            model = sm.OLS(y, x, missing='drop')
+            results = model.fit()
+            params = results.params
+
+
+            st.write(results.params)
+            st.write(results.summary()) 
+
+
+
+
+            
+            fig, ax = plt.subplots(1,1)
+            from matplotlib.ticker import FuncFormatter
+
+            ax.axis([0, 30, 0.01, 100000])
+            ax.semilogy(training_wells['CPOR'], training_wells['CKHG'], 'bo')
+
+            ax.grid(True)
+            ax.set_ylabel('Core Perm (mD)')
+            ax.set_xlabel('Core Porosity (%)')
+            ax.set_title('Core data regression using OLS')
+
+            ax.semilogy(training_wells['CPOR'], 10**(results.params[1] * training_wells['CPOR'] + results.params[0]), 'r-')
+
+
+            
+        #Format the axes so that they show whole numbers
+            for axis in [ax.yaxis, ax.xaxis]:
+                formatter = FuncFormatter(lambda y, _: '{:.16g}'.format(y))
+                axis.set_major_formatter(formatter)    
+            
+            st.pyplot(fig)
+
+
+            df['PERM']= 10**(results.params[1] * (df['DPHI_271_E']*100) + results.params[0])
+
+
+            st.write("### Using the Core data to predict Continuous Permeability from Density Porosity DPHI")
+            fig, ax = plt.subplots(figsize=(5, 8))
+            ax1 = plt.subplot2grid((1,2), (0,0), rowspan=1, colspan=1)
+            ax2 = plt.subplot2grid((1,2), (0,1), rowspan=1, colspan=1, sharey=ax1)
+
+            # Porosity track
+            ax1.plot(training_wells["CPOR"]/100, training_wells['DEPTH'], color="black", marker='.', linewidth=0)
+            ax1.plot(df['DPHI_271_E'], df['DEPTH'], color='blue', linewidth=0.5)
+            ax1.set_xlabel("Porosity")
+            
+            ax1.xaxis.label.set_color("black")
+            ax1.tick_params(axis='x', colors="black")
+            ax1.spines["top"].set_edgecolor("black")
+            
+
+            # Permeability track
+            ax2.plot(training_wells["CKHG"], training_wells['DEPTH'], color="black", marker='.', linewidth=0)
+            ax2.plot(df['PERM'], df['DEPTH'], color='blue', linewidth=0.5)
+            ax2.set_xlabel("Permeability")
+            
+            ax2.xaxis.label.set_color("black")
+            ax2.tick_params(axis='x', colors="black")
+            ax2.spines["top"].set_edgecolor("black")
+            
+            ax2.semilogx()
+
+            # Common functions for setting up the plot can be extracted into
+            # a for loop. This saves repeating code.
+            for ax in [ax1, ax2]:
+                
+                ax.grid(which='major', color='lightgrey', linestyle='-')
+                ax.xaxis.set_ticks_position("top")
+                ax.xaxis.set_label_position("top")
+
+            # Removes the y axis labels on the second track
+            for ax in [ax2]:
+                plt.setp(ax.get_yticklabels(), visible=False)
+
+            plt.tight_layout()
+            fig.subplots_adjust(wspace=0.3)
+
+            # Display the plot in Streamlit
+            st.pyplot(fig)
+
+
+
+
+
+
+
+
+
+        else: 
+            st.write("Sorry, unable to generate output. Data format does not match our requirements.")
+        
 
 def poroperm_detailed(df):
     required_columns = ['CPOR','DEPTH','CKHG','CGD']
@@ -1399,16 +1505,14 @@ def SIDEBAR3(df):
   
     #Sidebar navigation
     st.sidebar.title('Navigation')
-    options = st.sidebar.radio('Select what you want to display:', ['Poro-Perm General', 'Poro-Perm Detailed', 'Semi-Log','Box-Plots'])
+    options = st.sidebar.radio('Select what you want to display:', ['Poro-Perm Prediction using OLS Regression', 'Poro-Perm for Core Data', 'Box-Plots for Lithology'])
     # Navigation options
-    if options == 'Poro-Perm General':
+    if options == 'Poro-Perm Prediction using OLS Regression':
         poro(df)
-    elif options == 'Poro-Perm Detailed':
+    elif options == 'Poro-Perm for Core Data':
         poroperm_detailed(df)  
-    elif options == 'Semi-Log':
-        semilog(df)
-    elif options == 'Box-Plots':
-        boxplots(df)    
+    elif options == 'Box-Plots for Lithology':
+        boxplots(df)       
     
 def SIDEBAR4(df):
     # Sidebar setup
