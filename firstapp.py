@@ -1577,7 +1577,7 @@ st.text('This is a web app that allows exploration, engineering and application 
 st.image('HOMEPAGE.jpeg', width=500)
 
 
-st.sidebar.image('Green and Cream Leaves Landscaping Logo.png', width=150)
+st.sidebar.image('Green and Cream Leaves Landscaping Logo (1).png', width=150)
 
 # Display the image
 
