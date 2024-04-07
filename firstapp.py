@@ -782,14 +782,15 @@ def Unsupervised_Clustering_for_Lithofacies(df):
         num_clusters = st.sidebar.slider('Select number of clusters:', 2, 20, 5)
         
         # Fit KMeans clustering
+        fig, ax = plt.subplots()
         kmeans = KMeans(n_clusters=num_clusters)
-        visualizer = SilhouetteVisualizer(kmeans, colors='yellowbrick')
+        visualizer = SilhouetteVisualizer(kmeans, colors='yellowbrick', ax=ax)
         
         # Fit the data to the visualizer
         visualizer.fit(data)
         
         # Display the visualizer
-        st.pyplot()
+        st.pyplot(fig)
 
       
 
@@ -811,14 +812,18 @@ def Unsupervised_Clustering_for_Lithofacies(df):
 
             # Plot the silhouette scores
             
-            plt.plot(range_n_clusters, silhouette_avg, 'bo-')
-            plt.xlabel("Number of Clusters")
-            plt.ylabel('Silhouette Score')
-            plt.title('Silhouette Analysis For KMeans Clustering')
-            plt.grid(True)
-
-            # Display the plot
-            st.pyplot()
+                    # Create a new figure
+        fig, ax = plt.subplots()
+        
+        # Plotting the graph
+        ax.plot(range_n_clusters, silhouette_avg, 'bo-')
+        ax.set_xlabel("Number of Clusters")
+        ax.set_ylabel('Silhouette Score')
+        ax.set_title('Silhouette Analysis For KMeans Clustering')
+        ax.grid(True)
+        
+        # Display the plot in Streamlit
+        st.pyplot(fig)
            
         
        
