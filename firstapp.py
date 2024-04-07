@@ -779,7 +779,7 @@ def Unsupervised_Clustering_for_Lithofacies(df):
 
              # Create a sidebar for user input
         st.sidebar.header('KMeans Silhouette Analysis')
-        num_clusters = st.sidebar.selectbox('Select number of clusters:', list(range(2, 21)), 5)
+        num_clusters = st.sidebar.slider('Select number of clusters:', 2, 20, 5)
         
         # Fit KMeans clustering
         kmeans = KMeans(n_clusters=num_clusters)
@@ -854,10 +854,10 @@ def Unsupervised_Clustering_for_Lithofacies(df):
 
 
 
-        
+       
 
         
-        optimum_cluster = st.sidebar.slider('Select the optimum number of cluster:', 2, 20, 5)
+        optimum_cluster = st.sidebar.selectbox('Select the optimum number of cluster:',list(range(2, 21)), 5)
 
 
         # Create the KMeans model with the selected number of clusters
