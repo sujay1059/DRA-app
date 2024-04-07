@@ -1416,13 +1416,15 @@ def SIDEBAR4(df):
     st.sidebar.title('Navigation')
     options = st.sidebar.radio('Select what you want to display:', [
         'Unsupervised Clustering for Lithofacies','Random Forest for Lithology Classification',
-                                   'Random Forest for Regression','Isolation Forest for Auto Outlier Detection'])
+                                   'Random Forest for Regression','ANN for Regression','Isolation Forest for Auto Outlier Detection'])
     if options == 'Unsupervised Clustering for Lithofacies':
         Unsupervised_Clustering_for_Lithofacies(df)
     elif options == 'Random Forest for Lithology Classification':
         Random_Forest_For_Lithology_Classification(df)  
     elif options == 'Random Forest for Regression':
         Random_Forest_for_LinearRegression(df)
+    elif options == 'ANN for Regression':
+        ANN_for_Regression(df)
     elif options == 'Isolation Forest for Auto Outlier Detection':
         Isolation_Forest_for_Auto_Outlier_Detector(df)   
 
