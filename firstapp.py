@@ -1416,7 +1416,7 @@ def ANN_for_Regression(df):
                 plt.ylim(40, 140)
                 plt.ylabel('Predicted DT')
                 plt.xlabel('Actual DT')
-                plt.title('Model Prediction Result')
+                plt.title('ANN prediction on training data')
                 plt.plot([40,140], [40,140], 'black') #1 to 1 line
                 st.pyplot(fig)
                 
@@ -1428,14 +1428,14 @@ def ANN_for_Regression(df):
 
 
                 test_well['TEST_DT'] = model.predict(test_well_x)
-
+                st.write("### Using built model to predict DT")
                 fig,ax = plt.subplots()
                 plt.scatter(test_well['DT_E'], test_well['TEST_DT'])
                 plt.xlim(40, 140)
                 plt.ylim(40, 140)
                 plt.ylabel('Predicted DT')
                 plt.xlabel('Actual DT')
-                plt.title('Test Well Prediction')
+                
                 plt.plot([10,140], [10,140], 'black') #1 to 1 line
                 st.pyplot(fig)
 
