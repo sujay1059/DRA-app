@@ -1588,7 +1588,7 @@ df = None
 
 
 file_type = st.sidebar.radio("Select file type:", ("LAS", "CSV"))
-
+st.sidebar.image('giphy.gif')
 
 
 if file_type == "LAS":
