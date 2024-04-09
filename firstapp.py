@@ -1574,7 +1574,7 @@ def SIDEBAR4(df):
 
 # Add a title and intro text
 st.title('LOG LENSE AI 🤖')
-st.text('This is a web app that allows exploration, engineering and application of machine learning models on Petrophysics Data')
+st.text('This is a web app that allows exploration, engineering and application of machine learning models on Well log Data')
 
 # Load the image
 st.image('HOMEPAGE.jpeg', width=500)
